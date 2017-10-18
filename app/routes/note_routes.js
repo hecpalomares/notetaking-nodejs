@@ -40,7 +40,7 @@ module.exports = function(app, db) {
       } else {
         response.send(note);
       } 
-    });s
+    });
 	});
 
 	// Create a note by calling /notes (POST)
