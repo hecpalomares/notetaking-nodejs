@@ -2,7 +2,7 @@ var ObjectID = require('mongodb').ObjectID;
 
 module.exports = function(app, db) {
 	
-	// Get a note by calling /notes/:id
+	// Read a note by calling /notes/:id (GET)
 	app.get('/notes/:id', (request, response) => {
 		const id = request.params.id;
 		// MongoDB requires a ObjectID not just a string from request.params.id
@@ -16,7 +16,7 @@ module.exports = function(app, db) {
 		});
 	});
 
-	// Delete a note by calling /notes/:id
+	// Delete a note by calling /notes/:id (DELETE)
 	app.delete('/notes/:id', (request, response) => {
     const id = request.params.id;
     const details = { '_id': new ObjectID(id) };
@@ -29,7 +29,21 @@ module.exports = function(app, db) {
     });
   });
 
-	// Push a note by calling /notes
+	// Update a note by calling /notes/:id (PUT)
+	app.put('/notes/:id', (request, response) => {
+		const id = request.params.id;
+    const details = { '_id': new ObjectID(id) };
+    const note = { text: request.body.body, title: request.body.title };
+    db.collection('notes').update(details, note, (err, item) => {
+      if (err) {
+        response.send({'error':'An error has occurred'});
+      } else {
+        response.send(note);
+      } 
+    });s
+	});
+
+	// Create a note by calling /notes (POST)
 	app.post('/notes', (request, response) => {
 		const note = { text: request.body.body, title: request.body.title };
 		db.collection('notes').insert(note, (err, result) => {
